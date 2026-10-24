@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Parking Management API Test Client (10 Endpoints)</title>
+  <style>
+    body { font-family: sans-serif; margin: 24px; max-width: 900px; }
+    h2 { color: #1e3a8a; }
+    h3 { margin-top: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+    .endpoint-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+    .method { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; color: #fff; margin-right: 8px; }
+    .get { background-color: #0284c7; }
+    .post { background-color: #16a34a; }
+    .put { background-color: #d97706; }
+    .delete { background-color: #dc2626; }
+    input { margin: 4px 6px 4px 0; padding: 4px 8px; font-size: 14px; }
+    button { padding: 6px 14px; cursor: pointer; font-weight: bold; background: #2563eb; color: white; border: none; border-radius: 4px; margin-top: 4px; }
+    button:hover { background: #1d4ed8; }
+    pre { background: #0f172a; color: #38bdf8; padding: 10px; border-radius: 4px; font-size: 13px; overflow-x: auto; min-height: 20px; }
+    .warning-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; margin-bottom: 20px; color: #991b1b; }
+  </style>
+</head>
+<body>
+  <h2>Parking Management API Test Client (10 Endpoints)</h2>
+  
+  <div class="warning-box">
+    <strong>Note:</strong> Access this file via HTTP at <code>http://localhost:8080/test_client.html</code> while your server is running.
+  </div>
+
+  <!-- Car Resource Endpoints (5) -->
+  <h3>Car Resource APIs</h3>
+
+  <div class="endpoint-card">
+    <span class="method get">GET</span><strong>/car</strong> — List all cars<br>
+    <button onclick="sendRequest('GET', '/car', null, 'get-cars-res')">Send GET /car</button>
+    <pre id="get-cars-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method get">GET</span><strong>/car/{plate}</strong> — Get a car by plate<br>
+    Plate: <input id="get-car-plate" value="TEST-100">
+    <button onclick="sendRequest('GET', `/car/${getValue('get-car-plate')}`, null, 'get-car-res')">Send GET /car/{plate}</button>
+    <pre id="get-car-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method post">POST</span><strong>/car</strong> — Add a new car<br>
+    Plate: <input id="post-car-plate" value="TEST-100">
+    Make: <input id="post-car-make" value="Tesla">
+    Color: <input id="post-car-color" value="White">
+    Year: <input id="post-car-year" type="number" value="2023" style="width:70px;">
+    Lot: <input id="post-car-lot" type="number" value="800" style="width:60px;"><br>
+    <button onclick="sendRequest('POST', '/car', {plate: getValue('post-car-plate'), make: getValue('post-car-make'), color: getValue('post-car-color'), year: parseInt(getValue('post-car-year')), lot: parseInt(getValue('post-car-lot'))}, 'post-car-res')">Send POST /car</button>
+    <pre id="post-car-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method put">PUT</span><strong>/car/{plate}/{color}</strong> — Update car plate & color<br>
+    Plate: <input id="put-car-plate" value="TEST-100">
+    New Color: <input id="put-car-color" value="Black">
+    JSON Plate: <input id="put-car-newplate" value="TEST-100"><br>
+    <button onclick="sendRequest('PUT', `/car/${getValue('put-car-plate')}/${getValue('put-car-color')}`, {plate: getValue('put-car-newplate')}, 'put-car-plate-res')">Send PUT /car/{plate}/{color}</button>
+    <pre id="put-car-plate-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method put">PUT</span><strong>/car/{lot}/{make}</strong> — Update cars of make to new lot<br>
+    New Lot: <input id="put-lot-num" type="number" value="801" style="width:70px;">
+    Make: <input id="put-lot-make" value="Tesla"><br>
+    <button onclick="sendRequest('PUT', `/car/${getValue('put-lot-num')}/${getValue('put-lot-make')}`, null, 'put-car-lot-res')">Send PUT /car/{lot}/{make}</button>
+    <pre id="put-car-lot-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method delete">DELETE</span><strong>/car/{plate}</strong> — Delete car (Token Required)<br>
+    Plate: <input id="del-car-plate" value="TEST-100">
+    Token: <input id="del-car-token" value="privleged-user"><br>
+    <button onclick="sendRequest('DELETE', `/car/${getValue('del-car-plate')}`, null, 'del-car-res', getValue('del-car-token'))">Send DELETE /car/{plate}</button>
+    <pre id="del-car-res">(Results will appear here)</pre>
+  </div>
+
+
+  <!-- Lot Resource Endpoints (5) -->
+  <h3>Lot Resource APIs</h3>
+
+  <div class="endpoint-card">
+    <span class="method get">GET</span><strong>/lot</strong> — List all parking lots<br>
+    <button onclick="sendRequest('GET', '/lot', null, 'get-lots-res')">Send GET /lot</button>
+    <pre id="get-lots-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method get">GET</span><strong>/lot/{lot}/{make}/{color}/{year}</strong> — Filter cars in lot<br>
+    Lot: <input id="f-lot" value="801" style="width:60px;">
+    Make: <input id="f-make" value="Tesla" style="width:80px;">
+    Color: <input id="f-color" value="Black" style="width:80px;">
+    Year: <input id="f-year" value="2023" style="width:60px;"><br>
+    <button onclick="sendRequest('GET', `/lot/${getValue('f-lot')}/${getValue('f-make')}/${getValue('f-color')}/${getValue('f-year')}`, null, 'get-lot-filter-res')">Send GET Filtered Lot</button>
+    <pre id="get-lot-filter-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method post">POST</span><strong>/lot</strong> — Add a parking lot<br>
+    Lot Number: <input id="post-lot-num" type="number" value="800" style="width:70px;"><br>
+    <button onclick="sendRequest('POST', '/lot', {lot: parseInt(getValue('post-lot-num'))}, 'post-lot-res')">Send POST /lot</button>
+    <pre id="post-lot-res">(Results will appear here)</pre>
+  </div>
+
+  <div class="endpoint-card">
+    <span class="method delete">DELETE</span><strong>/lot/{lot}</strong> — Delete lot & associated cars (Token Required)<br>
+    Lot Number: <input id="del-lot-num" type="number" value="801" style="width:70px;">
+    Token: <input id="del-lot-token" value="privleged-user"><br>
+    <button onclick="sendRequest('DELETE', `/lot/${getValue('del-lot-num')}`, null, 'del-lot-res', getValue('del-lot-token'))">Send DELETE /lot/{lot}</button>
+    <pre id="del-lot-res">(Results will appear here)</pre>
+  </div>
+
+  <script>
+    const baseUrl = 'http://localhost:8080';
+
+    function getValue(id) {
+      return document.getElementById(id).value;
+    }
+
+    async function sendRequest(method, endpoint, data, resultId, token = null) {
+      const options = { method, headers: {} };
+      if (data) {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(data);
+      }
+      if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      try {
+        const response = await fetch(`${baseUrl}${endpoint}`, options);
+        const contentType = response.headers.get("content-type");
+        const body = contentType && contentType.includes("application/json") ? await response.json() : await response.text();
+        
+        document.getElementById(resultId).textContent = JSON.stringify({
+          status: response.status,
+          ok: response.ok,
+          body: body
+        }, null, 2);
+      } catch (err) {
+        document.getElementById(resultId).textContent = 'Connection Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
